@@ -4,12 +4,12 @@ Ce que l'enseignant doit préparer en dehors des slides. Les décisions correspo
 
 ## Avant la séance 1 (05/11/2026)
 
-- [ ] **Fil rouge `helpdesk`** (ADR 0002) : application Symfony 8 / PHP 8.4+, 15 à 25 classes, dette volontaire, règles métier non évidentes. Essayer d'abord de la faire écrire par un agent ; si la dette n'est pas tenue, introduire les défauts à la main.
-- [ ] **Catalogue de dette**, hors du dépôt des étudiants : chaque défaut, la séance où il apparaît, l'outil qui le détecte. Vérifier que chaque séance a de la matière (formatage, idiomes datés pour Rector, erreurs PHPStan, violations de couches pour Deptrac, règles métier à tester).
-- [ ] **Tag `seance-1`** sur le dépôt du fil rouge, et branche `nu`.
-- [ ] **Premier prompt d'expérience**, versionné dans le dépôt du fil rouge, et ses **tests d'acceptation cachés**, hors du dépôt (ADR 0003).
+- [x] **Fil rouge `helpdesk`** (ADR 0002) : application Symfony 8 / PHP 8.4+, 15 à 25 classes, dette volontaire, règles métier non évidentes. Essayer d'abord de la faire écrire par un agent ; si la dette n'est pas tenue, introduire les défauts à la main. Écrit par un agent le 20/10/2026 (Symfony 8.1, SQLite, 19 classes), publié sur [iia-laval/helpdesk](https://github.com/iia-laval/helpdesk).
+- [x] **Catalogue de dette**, hors du dépôt des étudiants : chaque défaut, la séance où il apparaît, l'outil qui le détecte. Vérifier que chaque séance a de la matière (formatage, idiomes datés pour Rector, erreurs PHPStan, violations de couches pour Deptrac, règles métier à tester). Dans `~/Projects/labs/helpdesk-enseignant/catalogue-dette.md`, mesuré avec les outils des séances 2 et 3.
+- [x] **Tag `seance-1`** sur le dépôt du fil rouge, et branche `nu`.
+- [x] **Premier prompt d'expérience**, versionné dans le dépôt du fil rouge, et ses **tests d'acceptation cachés**, hors du dépôt (ADR 0003). Réaffectation des tickets d'un technicien : `experiences/01-reaffectation.md` dans le fil rouge, tests et fiche dans `~/Projects/labs/helpdesk-enseignant/experiences/01-reaffectation/`.
 - [ ] **Accès au modèle** pour l'expérience de référence : à défaut de la décision de l'ADR 0004, démonstration par l'enseignant.
-- [ ] Quiz de positionnement.
+- [x] Quiz de positionnement : 20 questions, en local et non versionné (`qcm_positionnement_php_et_ia.md` et son corrigé, exclus par `.git/info/exclude`).
 
 ## Avant la séance 2 (05/11/2026)
 
