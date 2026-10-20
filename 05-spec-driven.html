@@ -1,0 +1,136 @@
+<section id="spec-driven">
+
+    <section>
+        <h2>Spec-driven development</h2>
+    </section>
+
+    <section>
+        <h3>Le prompt ne suffit pas</h3>
+        <p class="center"><code>Ajoute la fusion de deux tickets.</code></p>
+        <ul>
+            <li>Que deviennent les commentaires du ticket fusionné ?</li>
+            <li>Peut-on fusionner un ticket fermé ? Les tickets de deux clients différents ?</li>
+            <li>Quelle priorité garde le ticket conservé ?</li>
+        </ul>
+        <p>L'agent ne pose pas toujours ces questions : il comble les trous avec des choix <strong>plausibles</strong>.</p>
+    </section>
+
+    <section>
+        <h3>Le principe</h3>
+        <p>Le <strong>spec-driven development</strong> fait écrire une spécification validée <strong>avant</strong> tout code, puis la donne à l'agent comme guide.</p>
+        <pre class="mermaid">flowchart LR
+    S[Spécifier] --&gt; V[Valider]
+    V --&gt; P[Planifier]
+    P --&gt; I[Implémenter]
+    I --&gt; C[Vérifier contre la spec]
+    C -- écart --&gt; I</pre>
+        <p><mark>On relit une spécification de 20 lignes plus facilement qu'un diff de 300.</mark></p>
+    </section>
+
+    <section>
+        <h3>Une spécification</h3>
+        <pre><code class="language-markdown"># Fusionner deux tickets
+
+## Contexte
+Un client ouvre parfois deux tickets pour le même problème.
+
+## Règles
+- Le ticket absorbé est fermé, ses commentaires passent sur le ticket conservé.
+- On ne fusionne pas un ticket fermé, ni les tickets de deux clients différents.
+- Le ticket conservé prend la priorité la plus haute des deux.
+
+## Critères d'acceptation
+- Étant donné deux tickets ouverts du même client,
+  quand je fusionne #12 dans #8,
+  alors #12 est fermé et ses commentaires apparaissent sur #8.
+
+## Hors périmètre
+- Annuler une fusion.</code></pre>
+    </section>
+
+    <section>
+        <h3>Spécification et tests</h3>
+        <ul>
+            <li>Les <strong>règles</strong> disent à l'agent ce qu'il ne doit pas inventer.</li>
+            <li>Les <strong>critères d'acceptation</strong> se traduisent en tests.</li>
+            <li>Le <strong>hors périmètre</strong> l'empêche d'en faire trop.</li>
+        </ul>
+        <p>La spécification est un <strong>guide</strong> ; les tests qui en découlent sont des <strong>capteurs</strong>.</p>
+    </section>
+
+    <section>
+        <h3>Des outils pour standardiser</h3>
+        <p>Plusieurs projets outillent la démarche avec des commandes à lancer dans l'agent :</p>
+        <ul>
+            <li><strong>GitHub Spec Kit</strong>, maintenu par GitHub</li>
+            <li><strong>OpenSpec</strong>, pensé pour les projets existants</li>
+            <li><strong>BMAD-METHOD</strong>, qui couvre tout le cycle produit</li>
+        </ul>
+        <p>Ils produisent des fichiers Markdown versionnés avec le code : spécification, plan, tâches.</p>
+    </section>
+
+    <section>
+        <h3>GitHub Spec Kit</h3>
+        <pre><code class="language-bash">uv tool install specify-cli
+specify init helpdesk --integration copilot</code></pre>
+        <table style="font-size: 0.75em;">
+            <tbody>
+                <tr><td><code>/speckit-constitution</code></td><td>principes du projet, une fois pour toutes</td></tr>
+                <tr><td><code>/speckit-specify</code></td><td>spécification de la fonctionnalité</td></tr>
+                <tr><td><code>/speckit-plan</code></td><td>plan technique</td></tr>
+                <tr><td><code>/speckit-tasks</code></td><td>découpage en tâches</td></tr>
+                <tr><td><code>/speckit-implement</code></td><td>implémentation</td></tr>
+                <tr><td><code>/speckit-converge</code></td><td>vérification de l'écart avec la spécification, à répéter avec <code>implement</code></td></tr>
+            </tbody>
+        </table>
+        <p>Version 1.2.2 (octobre 2026), syntaxe de GitHub Copilot.</p>
+        <footer>
+            <a href="https://github.com/github/spec-kit" target="_blank" class="info">GitHub Spec Kit</a>
+            <a href="https://github.github.io/spec-kit/guides/existing-projects.html" target="_blank" class="info">Existing projects</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>OpenSpec</h3>
+        <pre><code class="language-bash">npm install -g @fission-ai/openspec@latest
+openspec init</code></pre>
+        <table style="font-size: 0.75em;">
+            <tbody>
+                <tr><td><code>/opsx:explore</code></td><td>réflexion avant d'écrire du code</td></tr>
+                <tr><td><code>/opsx:propose</code></td><td>proposition, specs, design et tâches du changement</td></tr>
+                <tr><td><code>/opsx:apply</code></td><td>implémentation des tâches</td></tr>
+                <tr><td><code>/opsx:archive</code></td><td>archivage, mise à jour des specs</td></tr>
+            </tbody>
+        </table>
+        <p>Les specs vivantes sont dans <code>openspec/specs/</code>, chaque changement dans <code>openspec/changes/&lt;nom&gt;/</code>. Dans Copilot : <code>/opsx-propose</code>. Version 1.14.3 (octobre 2026).</p>
+        <footer>
+            <a href="https://github.com/Fission-AI/OpenSpec" target="_blank" class="info">OpenSpec</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>BMAD-METHOD</h3>
+        <pre><code class="language-bash">npx bmad-method install</code></pre>
+        <ul>
+            <li>une boucle en quatre temps : clarifier, planifier, construire et vérifier, apprendre et ajuster</li>
+            <li>des expertises mobilisées selon le besoin : produit, architecture, UX, développement, tests</li>
+            <li>une planification plus ou moins poussée selon la taille du changement</li>
+        </ul>
+        <p>Version stable 6.12.4 (octobre 2026). La v7 est en préversion, avec des changements cassants d'une mise à jour à l'autre.</p>
+        <footer>
+            <a href="https://github.com/bmad-code-org/BMAD-METHOD" target="_blank" class="info">BMAD-METHOD</a>
+            <a href="https://docs.bmad-method.org/" target="_blank" class="info">Documentation</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Dans ce cours</h3>
+        <p>Ces outils sont présentés, pas appliqués :</p>
+        <ul>
+            <li>ils évoluent trop vite : BMAD a renommé et retiré des skills en 6.11, introduit des changements cassants en 6.12, et prépare une v7</li>
+            <li>ils outillent la <strong>spécification</strong>, ce cours outille la <strong>vérification</strong></li>
+        </ul>
+        <p><mark>Retenez l'idée : une spécification écrite, validée, avec des critères vérifiables, avant le code.</mark></p>
+    </section>
+
+</section>

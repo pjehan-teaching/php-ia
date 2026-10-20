@@ -1,0 +1,66 @@
+<section id="experience">
+
+    <section>
+        <h2>Expérience de référence</h2>
+    </section>
+
+    <section>
+        <h3>Mesurer le harnais</h3>
+        <p>Une expérience répétée compare le travail de l'agent <strong>avec</strong> et <strong>sans</strong> harnais :</p>
+        <ul>
+            <li>le même <strong>prompt d'expérience</strong>, versionné dans le dépôt, donné tel quel</li>
+            <li>le même agent, le même modèle</li>
+            <li>deux branches : <code>nu</code>, le code seul, et <code>outille</code>, le code avec le harnais construit pendant le cours</li>
+        </ul>
+        <p>Le résultat est jugé par des <strong>tests d'acceptation cachés</strong>, écrits par l'enseignant, que l'agent n'a jamais vus.</p>
+    </section>
+
+    <section>
+        <h3>Deux temps</h3>
+        <pre class="mermaid">flowchart LR
+    S1["Aujourd'hui : prompt sur nu"] --&gt; H["Séances suivantes : construction du harnais"]
+    H --&gt; S6["Dernière séance : même prompt sur nu et sur outille"]</pre>
+        <ul>
+            <li>aujourd'hui, seule la branche <code>nu</code> existe : c'est le point de référence</li>
+            <li>lors de la dernière séance, la moitié des binômes travaille sur <code>nu</code>, l'autre sur <code>outille</code>, et on agrège les résultats de la classe</li>
+        </ul>
+        <p>Un modèle ne produit jamais deux fois le même résultat : un seul essai ne prouve rien, c'est la série qui compte.</p>
+    </section>
+
+    <section>
+        <h3>Les règles du jeu</h3>
+        <ul>
+            <li>le prompt est donné <strong>tel quel</strong>, sans explication supplémentaire</li>
+            <li>personne n'aide l'agent : on accepte ses actions, on ne corrige pas son code</li>
+            <li>on laisse l'agent aller jusqu'au bout, sans limite d'itérations</li>
+            <li>on observe et on note</li>
+        </ul>
+        <p><mark>On mesure l'agent, pas le développeur qui le pilote.</mark></p>
+    </section>
+
+    <section id="experience-reference">
+        <h3>Exercice - Expérience de référence</h3>
+        <p>40 minutes. L'enseignant donne le prompt à l'agent devant la classe, sur la branche <code>nu</code>.</p>
+        <div class="instructions">
+            <ol>
+                <li>Lisez le prompt : <code>experiences/01-reaffectation.md</code>. Qu'attendez-vous de l'agent ?</li>
+                <li>Pendant l'exécution, notez les fichiers lus, les fichiers modifiés et les commandes lancées par l'agent.</li>
+                <li>Relevez le nombre d'itérations, la durée, et les vérifications que l'agent fait de lui-même.</li>
+                <li>Relisez le diff : le code vous semble-t-il juste ? Comparez avec les règles de votre inventaire.</li>
+                <li>Notez le résultat des tests d'acceptation cachés, par groupe de tests.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section>
+        <h3>Dépouillement</h3>
+        <ul>
+            <li>L'agent a-t-il lu le code qui contenait les règles métier ?</li>
+            <li>A-t-il vérifié son travail ? Avec quoi ?</li>
+            <li>Les erreurs relevées auraient-elles été évitées par une spécification ? Détectées par un outil ? Par un test ?</li>
+        </ul>
+        <p>Le détail des tests cachés reste secret jusqu'à la dernière séance : seul le score est publié.</p>
+        <p>Gardez vos notes : lors de la dernière séance, on comparera ce résultat à celui de l'agent sur la branche <code>outille</code>.</p>
+    </section>
+
+</section>

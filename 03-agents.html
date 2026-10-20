@@ -1,0 +1,130 @@
+<section id="agents">
+
+    <section>
+        <h2>Développer avec un agent</h2>
+    </section>
+
+    <section>
+        <h3>De la complétion à l'agent</h3>
+        <table style="font-size: 0.8em;">
+            <thead>
+                <tr><th></th><th>Ce qu'il fait</th><th>Qui vérifie</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Complétion</strong></td><td>propose la suite de la ligne en cours</td><td>vous, à chaque ligne</td></tr>
+                <tr><td><strong>Chat</strong></td><td>répond à une question, propose du code à copier</td><td>vous, avant de copier</td></tr>
+                <tr><td><strong>Agent</strong></td><td>lit les fichiers, les modifie, lance des commandes, recommence</td><td>lui-même… s'il en a les moyens</td></tr>
+            </tbody>
+        </table>
+        <p>Un <strong>agent</strong> enchaîne lui-même les actions pour accomplir une tâche.</p>
+    </section>
+
+    <section>
+        <h3>La boucle de l'agent</h3>
+        <pre class="mermaid">flowchart LR
+    P[Prompt] --&gt; R[Raisonner]
+    R --&gt; A["Agir : lire, modifier, lancer une commande"]
+    A --&gt; O[Observer le résultat]
+    O --&gt; R
+    R --&gt; F[Réponse finale]</pre>
+        <p>L'agent rassemble son contexte (code, erreurs, résultats de tests) au lieu de se fier à votre seul prompt, et itère jusqu'à estimer la tâche terminée.</p>
+        <footer>
+            <a href="https://code.visualstudio.com/docs/copilot/agents/overview" target="_blank" class="info">Agents in VS Code</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Agent = modèle + harnais</h3>
+        <ul>
+            <li>Le <strong>modèle</strong> (LLM) produit les réponses : il prédit la suite la plus probable.</li>
+            <li>Le <strong>harnais</strong> est tout ce qui l'entoure : instructions, outils, permissions, vérifications.</li>
+        </ul>
+        <p>Une partie du harnais est fournie par l'éditeur de l'agent. L'autre, c'est <strong>vous</strong> qui la construisez pour votre projet.</p>
+        <blockquote>
+            <p>“Agent = Model + Harness”</p>
+            <cite>- Birgitta Böckeler, avril 2026</cite>
+        </blockquote>
+        <footer>
+            <a href="https://martinfowler.com/articles/harness-engineering.html" target="_blank" class="info">Harness engineering for coding agent users</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>L'agent du cours</h3>
+        <ul>
+            <li><strong>VS Code</strong> avec <strong>GitHub Copilot</strong> en mode agent</li>
+            <li>un <strong>modèle</strong> choisi indépendamment de l'agent, avec votre propre clé d'API : le <strong>BYOK</strong> (<em>bring your own key</em>)</li>
+            <li>le même modèle pour toute la classe, pour pouvoir comparer les résultats</li>
+        </ul>
+        <p>Copilot Student reste utile pour les complétions, illimitées. Ses 200 crédits IA mensuels et sa sélection automatique du modèle ne suffisent pas au mode agent du cours.</p>
+        <footer>
+            <a href="https://code.visualstudio.com/docs/agent-customization/language-models" target="_blank" class="info">Language models in VS Code</a>
+            <a href="https://docs.github.com/en/copilot/get-started/plans" target="_blank" class="info">Plans for GitHub Copilot</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Du code plausible</h3>
+        <p>Un modèle produit le code <strong>le plus probable</strong> compte tenu de ses données d'entraînement et de ce qu'il a lu du projet.</p>
+        <p>Ce code compile, a l'air idiomatique et passe une relecture rapide.</p>
+        <p class="fragment"><mark>Du code plausible n'est pas du code juste.</mark></p>
+    </section>
+
+    <section>
+        <h3>Six façons de se tromper</h3>
+        <table style="font-size: 0.7em;">
+            <thead>
+                <tr><th>Erreur</th><th>Exemple</th><th>Origine</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>API inventée ou disparue</td><td>une méthode qui n'existe pas ou plus</td><td>versions anciennes dans l'entraînement</td></tr>
+                <tr><td>Idiome daté</td><td><code>switch</code> au lieu de <code>match</code>, annotations au lieu d'attributs</td><td>la majorité des exemples d'entraînement</td></tr>
+                <tr><td>Dépendance inventée</td><td>un paquet Composer qui n'existe pas</td><td>un nom vraisemblable</td></tr>
+                <tr><td>Règle métier ignorée</td><td>réassigner un ticket fermé</td><td>la règle n'est écrite nulle part</td></tr>
+                <tr><td>Faux test</td><td>un test qui passe sans rien vérifier</td><td>l'agent veut terminer sa tâche</td></tr>
+                <tr><td>Faille</td><td>une requête SQL concaténée</td><td>le code vulnérable abonde dans l'entraînement</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h3>API disparue</h3>
+        <pre class="line-numbers" data-line="4"><code class="language-php">#[Route('/tickets/{id}/comment', methods: ['POST'])]
+public function comment(Request $request): Response
+{
+    $content = $request-&gt;get('content');
+    // ...
+}</code></pre>
+        <p><code>Request::get()</code> a été utilisée pendant des années… et n'existe plus en Symfony 8. Le code est plausible, l'erreur n'apparaît qu'à l'exécution.</p>
+        <p>À la place : <code>$request-&gt;request-&gt;get()</code> pour un champ de formulaire, <code>$request-&gt;query-&gt;get()</code> pour un paramètre d'URL.</p>
+        <footer>
+            <a href="https://symfony.com/doc/current/components/http_foundation.html#accessing-request-data" target="_blank" class="info">Accessing Request Data</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Dépendance inventée</h3>
+        <p>Une étude de 576 000 extraits de code générés par 16 modèles :</p>
+        <ul>
+            <li>au moins <strong>5,2 %</strong> des paquets suggérés n'existent pas avec les modèles commerciaux</li>
+            <li><strong>21,7 %</strong> avec les modèles open source</li>
+            <li><strong>205 474</strong> noms de paquets inventés différents</li>
+        </ul>
+        <p>Le <strong>slopsquatting</strong> consiste à publier un paquet malveillant sous l'un de ces noms, pour qu'un développeur ou un agent l'installe.</p>
+        <footer>
+            <a href="https://arxiv.org/abs/2406.10279" target="_blank" class="info">Spracklen et al., USENIX Security 2025</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Pourquoi l'agent ne voit pas son erreur</h3>
+        <ul>
+            <li>Il ne connaît du projet que les fichiers qu'il a <strong>lus</strong>.</li>
+            <li>Il ne connaît des règles métier que celles qui sont <strong>écrites</strong>.</li>
+            <li>Il ne vérifie que ce qu'il peut <strong>exécuter</strong> : sans tests ni analyse statique, rien ne lui signale l'erreur.</li>
+            <li>Il s'arrête quand il <strong>estime</strong> avoir terminé.</li>
+        </ul>
+        <p class="fragment"><mark>Il faut lui dire quoi faire, et lui donner les moyens de vérifier ce qu'il a fait.</mark></p>
+    </section>
+
+</section>

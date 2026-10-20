@@ -1,0 +1,150 @@
+<section id="dette-technique">
+
+    <section>
+        <h2>Dette technique</h2>
+    </section>
+
+    <section>
+        <h3>La métaphore</h3>
+        <p>Ward Cunningham l'introduit en 1992 : un raccourci dans le code, c'est un <strong>emprunt</strong>.</p>
+        <ul>
+            <li>on livre plus vite aujourd'hui</li>
+            <li>on paie des <strong>intérêts</strong> ensuite : chaque modification devient plus lente et plus risquée</li>
+            <li>on rembourse en remaniant le code</li>
+        </ul>
+        <p>Sans remboursement, les intérêts finissent par absorber tout le temps de développement.</p>
+        <footer>
+            <a href="https://martinfowler.com/bliki/TechnicalDebt.html" target="_blank" class="info">Technical Debt</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Le quadrant de la dette</h3>
+        <table style="font-size: 0.8em;">
+            <thead>
+                <tr><th></th><th>Imprudente</th><th>Prudente</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Délibérée</strong></td><td>« On n'a pas le temps de bien faire »</td><td>« On livre maintenant, on sait ce qu'on devra reprendre »</td></tr>
+                <tr><td><strong>Involontaire</strong></td><td>« C'est quoi, une couche ? »</td><td>« Maintenant, on sait comment on aurait dû faire »</td></tr>
+            </tbody>
+        </table>
+        <p>Seule la dette prudente et délibérée est un vrai choix. La dette prudente et involontaire est inévitable : on comprend le problème en le résolvant.</p>
+        <footer>
+            <a href="https://martinfowler.com/bliki/TechnicalDebtQuadrant.html" target="_blank" class="info">Technical Debt Quadrant</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Dette et agent</h3>
+        <ul>
+            <li>L'agent <strong>imite</strong> le code qu'il lit : dans un projet endetté, il reproduit la dette.</li>
+            <li>Il produit beaucoup de code, vite : la dette s'accumule au même rythme.</li>
+            <li>Il ne rembourse rien de lui-même : il ne voit pas la dette, sauf si un capteur la lui signale.</li>
+        </ul>
+        <p><mark>Avec un agent, la dette technique devient involontaire et imprudente par défaut.</mark></p>
+    </section>
+
+    <section>
+        <h3>Code smells</h3>
+        <p>Un <strong>code smell</strong> est un symptôme visible dans le code, qui signale un probable problème de conception.</p>
+        <ul>
+            <li>le terme vient de Kent Beck, popularisé par <em>Refactoring</em> de Martin Fowler</li>
+            <li>un smell se repère vite, souvent à l'œil</li>
+            <li>il n'est pas toujours un problème : c'est une piste à examiner</li>
+        </ul>
+        <footer>
+            <a href="https://martinfowler.com/bliki/CodeSmell.html" target="_blank" class="info">Code Smell</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Cinq familles</h3>
+        <table style="font-size: 0.7em;">
+            <thead>
+                <tr><th>Famille</th><th>Exemples</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Bloaters</strong> : du code qui enfle</td><td>méthode trop longue, classe trop grosse, obsession des types primitifs, longue liste de paramètres</td></tr>
+                <tr><td><strong>Object-Orientation Abusers</strong></td><td><code>switch</code> sur un type, champ temporaire, héritage refusé</td></tr>
+                <tr><td><strong>Change Preventers</strong> : une modification en entraîne d'autres</td><td>changement divergent, chirurgie au fusil de chasse</td></tr>
+                <tr><td><strong>Dispensables</strong> : du code en trop</td><td>duplication, code mort, commentaire qui excuse le code, généralité spéculative</td></tr>
+                <tr><td><strong>Couplers</strong> : un couplage excessif</td><td>jalousie de fonctionnalité, chaîne de messages, intermédiaire inutile</td></tr>
+            </tbody>
+        </table>
+        <footer>
+            <a href="https://refactoring.guru/refactoring/smells" target="_blank" class="info">Code Smells (refactoring.guru)</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Obsession des types primitifs</h3>
+        <pre><code class="language-php">if ($ticket-&gt;getStatus() == 'closed') {
+    // ...
+}
+
+if ($customer-&gt;getPlan() == 'premium') {
+    $priority = $priority + 1;
+}</code></pre>
+        <ul>
+            <li>des chaînes et des entiers « magiques », répétés dans tout le code</li>
+            <li>une faute de frappe (<code>'close'</code>) ne provoque aucune erreur</li>
+            <li>rien n'indique la liste des valeurs possibles</li>
+        </ul>
+        <p>Un <code>enum</code> PHP donne un nom, une liste fermée et un type à ces valeurs.</p>
+    </section>
+
+    <section>
+        <h3>Obsession des types primitifs</h3>
+        <pre><code class="language-php">enum TicketStatus: string
+{
+    case New = 'new';
+    case InProgress = 'in_progress';
+    case Resolved = 'resolved';
+    case Closed = 'closed';
+}
+
+if ($ticket-&gt;getStatus() === TicketStatus::Closed) {
+    // ...
+}</code></pre>
+        <p>Doctrine sait stocker un enum : <code>#[ORM\Column(enumType: TicketStatus::class)]</code>. La base garde les mêmes valeurs.</p>
+        <footer>
+            <a href="https://www.php.net/manual/fr/language.enumerations.backed.php" target="_blank" class="info">Énumérations avec valeur</a>
+            <a href="https://symfony.com/doc/current/doctrine.html#doctrine-adding-mapping" target="_blank" class="info">Doctrine mapping</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Contrôleur obèse</h3>
+        <pre class="line-numbers"><code class="language-php">#[Route('/tickets/{id}/assign', methods: ['POST'])]
+public function assign($id, Request $request): Response
+{
+    $ticket = $this-&gt;em-&gt;getRepository(Ticket::class)-&gt;find($id);
+    if (!$ticket) {
+        return new Response('Ticket introuvable', 404);
+    }
+    // vérifications métier, requêtes, changement de statut,
+    // envoi de notification, message flash, redirection...
+}</code></pre>
+        <ul>
+            <li>les règles métier ne sont réutilisables nulle part ailleurs : ni dans une commande, ni dans une API</li>
+            <li>elles ne se testent qu'à travers une requête HTTP</li>
+            <li>un agent qui ajoute une fonctionnalité voisine les <strong>recopie</strong>… ou les oublie</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Mesurer la dette</h3>
+        <p>Aujourd'hui, la dette se repère à l'œil. Les séances suivantes la mesurent :</p>
+        <table style="font-size: 0.8em;">
+            <tbody>
+                <tr><td>style, idiomes datés</td><td>PHP-CS-Fixer, Rector</td></tr>
+                <tr><td>types, méthodes inexistantes</td><td>PHPStan</td></tr>
+                <tr><td>dépendances entre couches</td><td>Deptrac</td></tr>
+                <tr><td>comportement non vérifié</td><td>PHPUnit, Infection</td></tr>
+            </tbody>
+        </table>
+        <p>Un outil mesure ce qu'une règle peut décrire. Une règle métier mal codée ne se voit qu'avec un test.</p>
+    </section>
+
+</section>

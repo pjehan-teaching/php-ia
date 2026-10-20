@@ -1,0 +1,163 @@
+<section id="principes">
+
+    <section>
+        <h2>SOLID, KISS, DRY</h2>
+    </section>
+
+    <section>
+        <h3>SOLID</h3>
+        <table style="font-size: 0.8em;">
+            <tbody>
+                <tr><td><strong>S</strong></td><td>Single Responsibility</td><td>une classe n'a qu'une raison de changer</td></tr>
+                <tr><td><strong>O</strong></td><td>Open/Closed</td><td>on étend un comportement sans modifier le code existant</td></tr>
+                <tr><td><strong>L</strong></td><td>Liskov Substitution</td><td>une sous-classe s'utilise partout où l'on attend sa classe parente</td></tr>
+                <tr><td><strong>I</strong></td><td>Interface Segregation</td><td>plusieurs petites interfaces valent mieux qu'une grosse</td></tr>
+                <tr><td><strong>D</strong></td><td>Dependency Inversion</td><td>on dépend d'abstractions, pas d'implémentations</td></tr>
+            </tbody>
+        </table>
+        <p>Cinq principes de conception orientée objet, réunis par Robert C. Martin au début des années 2000.</p>
+        <footer>
+            <a href="https://fr.wikipedia.org/wiki/SOLID_(informatique)" target="_blank" class="info">SOLID</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Responsabilité unique</h3>
+        <p>Créer un ticket depuis un contrôleur qui fait tout :</p>
+        <ul>
+            <li>lire et valider le formulaire</li>
+            <li>calculer la priorité selon l'offre du client</li>
+            <li>enregistrer le ticket</li>
+            <li>notifier le client</li>
+            <li>choisir la page de redirection</li>
+        </ul>
+        <p>Cinq raisons de changer pour une seule classe. La règle de priorité doit être recopiée dans l'API et dans toute nouvelle fonctionnalité.</p>
+    </section>
+
+    <section>
+        <h3>Responsabilité unique</h3>
+        <pre><code class="language-php">final class TicketOpener
+{
+    public function __construct(
+        private PriorityPolicy $priorityPolicy,
+        private EntityManagerInterface $em,
+        private Notifier $notifier,
+    ) {
+    }
+
+    public function open(Customer $customer, string $title, Priority $requested): Ticket
+    {
+        $priority = $this-&gt;priorityPolicy-&gt;for($customer, $requested);
+        $ticket = new Ticket($customer, $title, $priority);
+        $this-&gt;em-&gt;persist($ticket);
+        $this-&gt;em-&gt;flush();
+        $this-&gt;notifier-&gt;ticketOpened($ticket);
+
+        return $ticket;
+    }
+}</code></pre>
+        <p>Le contrôleur et l'API appellent le même service : la règle n'existe qu'à un endroit.</p>
+    </section>
+
+    <section>
+        <h3>Ouvert/fermé</h3>
+        <pre><code class="language-php">#[AutoconfigureTag]
+interface NotificationChannel
+{
+    public function send(Ticket $ticket, string $event): void;
+}
+
+final class Notifier
+{
+    /** @param iterable&lt;NotificationChannel&gt; $channels */
+    public function __construct(#[AutowireIterator(NotificationChannel::class)] private iterable $channels)
+    {
+    }
+
+    public function notify(Ticket $ticket, string $event): void
+    {
+        foreach ($this-&gt;channels as $channel) {
+            $channel-&gt;send($ticket, $event);
+        }
+    }
+}</code></pre>
+        <p>Ajouter les SMS, c'est ajouter une classe qui implémente <code>NotificationChannel</code>, sans toucher à <code>Notifier</code>.</p>
+        <footer>
+            <a href="https://symfony.com/doc/current/service_container/tags.html#reference-tagged-services" target="_blank" class="info">Reference Tagged Services</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Liskov et ségrégation des interfaces</h3>
+        <div class="container">
+            <div class="col">
+                <h4>Substitution de Liskov</h4>
+                <p>Une sous-classe qui lève une exception là où la classe parente fonctionne casse le code qui l'utilise.</p>
+                <p>Un <code>ArchivedTicket extends Ticket</code> dont <code>setAssignee()</code> lève une exception viole le principe : l'état « archivé » est un statut, pas un sous-type.</p>
+            </div>
+            <div class="col">
+                <h4>Ségrégation des interfaces</h4>
+                <p>Une classe ne doit pas dépendre de méthodes qu'elle n'utilise pas.</p>
+                <p>La commande nocturne n'a besoin que de <code>findResolvedBefore()</code> : elle peut dépendre d'une petite interface plutôt que de tout le dépôt.</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Inversion des dépendances</h3>
+        <pre><code class="language-php">use Psr\Clock\ClockInterface;
+
+final class SlaCalculator
+{
+    public function __construct(private ClockInterface $clock)
+    {
+    }
+
+    public function isLate(Ticket $ticket): bool
+    {
+        return $this-&gt;dueDate($ticket) &lt; $this-&gt;clock-&gt;now();
+    }
+}</code></pre>
+        <p>Avec <code>new \DateTime()</code>, le retard dépend de l'heure réelle : impossible de tester un ticket créé un vendredi soir. Avec <code>ClockInterface</code>, un test fournit l'heure qu'il veut.</p>
+        <footer>
+            <a href="https://symfony.com/doc/current/components/clock.html" target="_blank" class="info">The Clock Component</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>KISS</h3>
+        <p><strong>Keep It Simple, Stupid</strong> : la solution la plus simple qui répond au besoin.</p>
+        <ul>
+            <li>pas d'abstraction tant qu'il n'y a qu'une implémentation</li>
+            <li>pas de configuration pour un cas qui n'existe pas encore (<strong>YAGNI</strong> : <em>You Aren't Gonna Need It</em>)</li>
+            <li>le code le plus simple est le plus facile à relire, pour vous comme pour l'agent</li>
+        </ul>
+        <p>Un agent a tendance à <strong>en faire trop</strong> : interfaces, options, cas limites que personne n'a demandés. Chaque ligne en trop est une ligne à relire.</p>
+    </section>
+
+    <section>
+        <h3>DRY</h3>
+        <blockquote>
+            <p>“Every piece of knowledge must have a single, unambiguous, authoritative representation within a system.”</p>
+            <cite>- Andy Hunt et Dave Thomas, <em>The Pragmatic Programmer</em></cite>
+        </blockquote>
+        <ul>
+            <li>DRY parle de <strong>connaissance</strong> : une règle métier, un format, une constante</li>
+            <li>deux bouts de code qui se ressemblent par hasard ne sont pas une duplication</li>
+            <li>une règle recopiée trois fois finit par diverger : une copie est corrigée, les autres non</li>
+        </ul>
+        <p>Un agent cherche rarement si une fonction existe déjà : il la <strong>réécrit</strong>.</p>
+    </section>
+
+    <section>
+        <h3>Des principes, pas des règles</h3>
+        <p>Les principes guident la conception, mais aucun outil ne les vérifie entièrement.</p>
+        <ul>
+            <li>Deptrac vérifie une partie de la séparation des responsabilités : qui a le droit de dépendre de qui</li>
+            <li>PHPStan vérifie les types, et donc une partie des contrats</li>
+            <li>le reste passe par la relecture et par les guides donnés à l'agent</li>
+        </ul>
+        <p><mark>Un principe écrit dans <code>AGENTS.md</code> est un guide ; une règle Deptrac est un capteur.</mark></p>
+    </section>
+
+</section>

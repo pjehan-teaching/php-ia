@@ -1,0 +1,96 @@
+<section id="fil-rouge">
+
+    <section>
+        <h2>Le fil rouge</h2>
+    </section>
+
+    <section>
+        <h3>helpdesk</h3>
+        <p>Les clients ouvrent des tickets de support, les techniciens les prennent en charge, les commentent et les résolvent.</p>
+        <pre class="mermaid">classDiagram
+    direction LR
+    Customer "1" -- "*" Ticket
+    Technician "0..1" -- "*" Ticket : assigné
+    Ticket "1" -- "*" Comment
+    class Ticket {
+        title
+        status
+        priority
+    }
+    class Customer {
+        name
+        plan
+    }</pre>
+        <p>Symfony 8.1, Doctrine ORM, Twig, base SQLite. Une API JSON et une commande lancée chaque nuit complètent l'interface web.</p>
+        <footer>
+            <a href="https://github.com/iia-laval/helpdesk" target="_blank" class="info">iia-laval/helpdesk</a>
+        </footer>
+    </section>
+
+    <section id="installer-fil-rouge">
+        <h3>Exercice - Installer le fil rouge</h3>
+        <p>30 minutes. Prérequis : PHP 8.4 ou plus avec <code>pdo_sqlite</code>, Composer, Symfony CLI (facultatif).</p>
+        <div class="instructions">
+            <ol>
+                <li>Clonez <code>iia-laval/helpdesk</code>, puis branchez-le sur votre propre dépôt GitHub (slide suivante).</li>
+                <li>Suivez le <code>README.md</code> : dépendances, migrations, fixtures, serveur.</li>
+                <li>Ouvrez l'application, choisissez un technicien dans la barre du haut.</li>
+                <li>Créez un ticket, assignez-le, commentez-le, résolvez-le.</li>
+                <li>Lancez la commande de fermeture automatique décrite dans le <code>README.md</code>. Que se passe-t-il ?</li>
+            </ol>
+        </div>
+        <footer>
+            <a href="https://github.com/iia-laval/helpdesk#installation" target="_blank" class="info">Installation</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Votre dépôt</h3>
+        <p>Votre travail va dans votre dépôt ; celui du cours reste la référence, sous le nom <code>upstream</code>.</p>
+        <pre><code class="language-bash">git clone https://github.com/iia-laval/helpdesk.git
+cd helpdesk
+git remote rename origin upstream
+git remote add origin git@github.com:&lt;vous&gt;/helpdesk.git
+git push -u origin main</code></pre>
+        <p>Créez le dépôt GitHub vide avant le <code>push</code>. La CI du projet tournera dessus.</p>
+    </section>
+
+    <section>
+        <h3>Branches et tags</h3>
+        <table style="font-size: 0.8em;">
+            <tbody>
+                <tr><td><code>main</code></td><td>votre travail, séance après séance</td></tr>
+                <tr><td><code>nu</code></td><td>le code d'origine, sans harnais : il ne bouge plus</td></tr>
+                <tr><td><code>seance-1</code>, <code>seance-2</code>…</td><td>tags : l'état attendu au début de chaque séance</td></tr>
+            </tbody>
+        </table>
+        <p>En retard sur une séance ? Récupérez les tags et repartez de celui de la séance :</p>
+        <pre><code class="language-bash">git fetch upstream --tags
+git switch -c reprise-seance-3 seance-3</code></pre>
+    </section>
+
+    <section id="code-smells-fil-rouge">
+        <h3>Exercice - Repérer les code smells</h3>
+        <p>45 minutes, en binôme. Lisez le code de <code>src/</code> et de <code>templates/</code> et dressez l'inventaire de la dette.</p>
+        <div class="instructions">
+            <ol>
+                <li>Pour chaque smell repéré, notez le fichier, la ligne et le nom du smell.</li>
+                <li>Classez-le dans l'une des cinq familles, et notez le principe qu'il enfreint (SOLID, KISS, DRY, PSR).</li>
+                <li>Notez à part les comportements qui vous semblent faux : ce sont des bugs, pas des smells.</li>
+                <li>Pour chaque smell, estimez l'outil qui pourrait le détecter, ou s'il faut un test.</li>
+                <li>Gardez votre inventaire : il servira de liste de contrôle jusqu'à la fin du cours.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section>
+        <h3>Mise en commun</h3>
+        <ul>
+            <li>Quels smells reviennent dans presque tous les fichiers ?</li>
+            <li>Quelles règles métier avez-vous trouvées ? Où sont-elles écrites ?</li>
+            <li>Lesquelles sont écrites à plusieurs endroits ? Les copies disent-elles la même chose ?</li>
+            <li>Qu'est-ce qu'un nouvel arrivant, humain ou agent, risque de casser en premier ?</li>
+        </ul>
+    </section>
+
+</section>

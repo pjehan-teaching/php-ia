@@ -1,0 +1,120 @@
+<section id="psr">
+
+    <section>
+        <h2>Standards PSR</h2>
+    </section>
+
+    <section>
+        <h3>Le PHP-FIG</h3>
+        <p>Le <strong>PHP Framework Interop Group</strong> publie des recommandations communes aux frameworks et bibliothèques PHP : les <strong>PSR</strong> (<em>PHP Standards Recommendations</em>).</p>
+        <table style="font-size: 0.75em;">
+            <tbody>
+                <tr><td><strong>PSR-1</strong>, PSR-12</td><td>style de code de base, style étendu (remplacé par PER Coding Style)</td></tr>
+                <tr><td><strong>PSR-4</strong></td><td>autoloading</td></tr>
+                <tr><td>PSR-3</td><td>interface de logger</td></tr>
+                <tr><td>PSR-7, PSR-15, PSR-17, PSR-18</td><td>messages, middlewares, fabriques et client HTTP</td></tr>
+                <tr><td>PSR-11, PSR-14</td><td>conteneur de services, événements</td></tr>
+                <tr><td>PSR-20</td><td>horloge</td></tr>
+            </tbody>
+        </table>
+        <footer>
+            <a href="https://www.php-fig.org/psr/" target="_blank" class="info">PHP Standards Recommendations</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>PSR-4 : autoloading</h3>
+        <p>Un <strong>préfixe d'espace de noms</strong> correspond à un <strong>dossier</strong> ; la suite du nom de classe donne le chemin du fichier.</p>
+        <pre><code class="language-json">"autoload": {
+    "psr-4": {
+        "App\\": "src/"
+    }
+}</code></pre>
+        <table style="font-size: 0.75em;">
+            <thead>
+                <tr><th>Classe</th><th>Fichier</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>App\Entity\Ticket</code></td><td><code>src/Entity/Ticket.php</code></td></tr>
+                <tr><td><code>App\Controller\Api\TicketApiController</code></td><td><code>src/Controller/Api/TicketApiController.php</code></td></tr>
+            </tbody>
+        </table>
+        <footer>
+            <a href="https://www.php-fig.org/psr/psr-4/" target="_blank" class="info">PSR-4</a>
+            <a href="https://getcomposer.org/doc/04-schema.md#psr-4" target="_blank" class="info">Composer : psr-4</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>PSR-4 : les pièges</h3>
+        <ul>
+            <li>un fichier dont le nom ne correspond pas à la classe n'est <strong>pas chargé</strong></li>
+            <li>la casse compte : <code>src/entity/Ticket.php</code> fonctionne sous Windows et macOS, pas sur le serveur Linux</li>
+            <li>une seule classe par fichier</li>
+        </ul>
+        <p>Composer signale les classes mal placées :</p>
+        <pre><code class="language-bash">composer dump-autoload --strict-psr</code></pre>
+        <p>Un agent qui crée un fichier au mauvais endroit produit une erreur <code>Class not found</code>… qu'il peut prendre pour un problème de cache.</p>
+        <footer>
+            <a href="https://getcomposer.org/doc/03-cli.md#dump-autoload-dumpautoload" target="_blank" class="info">composer dump-autoload</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>PER Coding Style</h3>
+        <p>Le style de code du PHP-FIG, version <strong>3.1</strong>. Il étend et remplace PSR-12, et suit les nouveautés du langage.</p>
+        <ul>
+            <li>indentation de 4 espaces, jamais de tabulations</li>
+            <li>accolade ouvrante d'une classe ou d'une méthode seule sur sa ligne, celle d'une structure de contrôle sur la même ligne</li>
+            <li><code>elseif</code> plutôt que <code>else if</code>, corps toujours entre accolades</li>
+            <li>mots-clés et types en minuscules, formes courtes (<code>bool</code>, <code>int</code>)</li>
+            <li>virgule finale obligatoire dans une liste sur plusieurs lignes</li>
+            <li>limite souple de 120 caractères par ligne</li>
+        </ul>
+        <footer>
+            <a href="https://www.php-fig.org/per/coding-style/" target="_blank" class="info">PER Coding Style</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>PER Coding Style</h3>
+        <pre><code class="language-php">&lt;?php
+
+declare(strict_types=1);
+
+namespace App\Service;
+
+use App\Entity\Ticket;
+use Psr\Clock\ClockInterface;
+
+final class SlaCalculator
+{
+    public function __construct(
+        private readonly ClockInterface $clock,
+    ) {
+    }
+
+    public function isLate(Ticket $ticket): bool
+    {
+        if ($ticket-&gt;isClosed()) {
+            return false;
+        }
+
+        return $this-&gt;dueDate($ticket) &lt; $this-&gt;clock-&gt;now();
+    }
+}</code></pre>
+    </section>
+
+    <section>
+        <h3>Un standard ne s'applique pas à la main</h3>
+        <ul>
+            <li>personne ne vérifie 120 caractères ou la place d'une accolade en relecture</li>
+            <li>un agent suit le style du code qu'il lit, ou celui de ses données d'entraînement</li>
+        </ul>
+        <p>À la prochaine séance, <strong>PHP-CS-Fixer</strong> applique les règles <code>@PER-CS</code> ou <code>@Symfony</code> automatiquement, et devient le premier capteur de <code>composer check</code>.</p>
+        <footer>
+            <a href="https://cs.symfony.com/doc/ruleSets/index.html" target="_blank" class="info">PHP-CS-Fixer : rule sets</a>
+        </footer>
+    </section>
+
+</section>

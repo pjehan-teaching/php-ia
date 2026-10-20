@@ -1,0 +1,130 @@
+<section id="harnais">
+
+    <section>
+        <h2>Le harnais</h2>
+    </section>
+
+    <section>
+        <h3>Anticiper et détecter</h3>
+        <blockquote>
+            <p>“To harness a coding agent we both anticipate unwanted outputs and try to prevent them, and we put sensors in place […]”</p>
+            <cite>- Birgitta Böckeler, avril 2026</cite>
+        </blockquote>
+        <p>Le <strong>harnais</strong> est l'ensemble des guides et des capteurs que le développeur construit autour d'un agent pour qu'il produise du code de qualité.</p>
+        <footer>
+            <a href="https://martinfowler.com/articles/harness-engineering.html" target="_blank" class="info">Harness engineering for coding agent users</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Guides et capteurs</h3>
+        <div class="container">
+            <div class="col">
+                <h4>Guide</h4>
+                <p>Oriente l'agent <strong>avant</strong> qu'il agisse.</p>
+                <ul>
+                    <li>spécification</li>
+                    <li><code>AGENTS.md</code></li>
+                    <li>conventions du projet</li>
+                    <li>skills</li>
+                </ul>
+            </div>
+            <div class="col">
+                <h4>Capteur</h4>
+                <p>Détecte une erreur <strong>après</strong> l'action, pour que l'agent se corrige.</p>
+                <ul>
+                    <li>tests</li>
+                    <li>formateurs et linters</li>
+                    <li>analyse statique</li>
+                    <li>revue de code</li>
+                </ul>
+            </div>
+        </div>
+        <p><mark>Un guide réduit les erreurs, un capteur attrape celles qui restent.</mark></p>
+    </section>
+
+    <section>
+        <h3>Capteurs déterministes et inférentiels</h3>
+        <table style="font-size: 0.8em;">
+            <thead>
+                <tr><th></th><th>Déterministe</th><th>Inférentiel</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Exemples</td><td>PHPUnit, PHPStan, PHP-CS-Fixer</td><td>revue de code par un modèle</td></tr>
+                <tr><td>Durée</td><td>millisecondes à secondes</td><td>secondes à minutes</td></tr>
+                <tr><td>Coût</td><td>du temps de processeur</td><td>des tokens</td></tr>
+                <tr><td>Résultat</td><td>identique à chaque exécution</td><td>peut varier d'une exécution à l'autre</td></tr>
+                <tr><td>Détecte</td><td>ce qu'une règle peut décrire</td><td>des problèmes de sens, de conception</td></tr>
+            </tbody>
+        </table>
+        <p>Böckeler parle de capteurs <em>computational</em> et <em>inferential</em>. Ce cours s'appuie surtout sur les premiers : rapides, gratuits, fiables.</p>
+    </section>
+
+    <section>
+        <h3>La boucle avec capteurs</h3>
+        <pre class="mermaid">flowchart LR
+    P[Prompt] --&gt; M[L'agent modifie le code]
+    M --&gt; C["composer check"]
+    C --&gt; E{Erreurs ?}
+    E -- oui --&gt; M
+    E -- non --&gt; F[Tâche terminée]</pre>
+        <p>Sans capteur, l'agent s'arrête quand le code lui <strong>semble</strong> correct. Avec des capteurs, il s'arrête quand le code <strong>passe</strong> les vérifications.</p>
+    </section>
+
+    <section>
+        <h3>Le harnais du cours</h3>
+        <table style="font-size: 0.75em;">
+            <thead>
+                <tr><th>Ajout au harnais</th><th>Type</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>spécification, principes de conception, PSR</td><td>guides</td></tr>
+                <tr><td>PHP-CS-Fixer, Twig CS Fixer, linters Symfony, Rector</td><td>capteurs</td></tr>
+                <tr><td>PHPStan, Deptrac</td><td>capteurs</td></tr>
+                <tr><td>PHPUnit, Infection</td><td>capteurs</td></tr>
+                <tr><td>hooks Git, GitHub Actions, <code>composer audit</code></td><td>capteurs</td></tr>
+                <tr><td><code>AGENTS.md</code>, hooks d'agent, Symfony AI Mate</td><td>guides et capteurs</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h3>Une seule commande</h3>
+        <p>Les capteurs déterministes rapides sont regroupés dans <code class="terminal">composer check</code>, un script Composer :</p>
+        <ul>
+            <li>un seul nom à retenir, pour vous comme pour l'agent</li>
+            <li>un code de retour : <code>0</code> si tout passe</li>
+            <li>une sortie <strong>concise</strong> : l'agent lit chaque ligne, et chaque ligne coûte des tokens</li>
+        </ul>
+        <p><code>AGENTS.md</code> indique à l'agent de la lancer après chaque modification. Les outils trop lents (Infection) ne tournent qu'en CI.</p>
+    </section>
+
+    <section>
+        <h3>Un code facile à harnacher</h3>
+        <blockquote>
+            <p>“Not every codebase is equally amenable to harnessing.”</p>
+            <cite>- Birgitta Böckeler</cite>
+        </blockquote>
+        <ul>
+            <li>des types précis donnent prise à l'analyse statique</li>
+            <li>des couches nettes permettent des règles d'architecture</li>
+            <li>du code découpé se teste</li>
+        </ul>
+        <p>Assainir le fil rouge ne sert pas qu'à le rendre lisible : chaque séance le rend aussi plus <strong>vérifiable</strong>.</p>
+    </section>
+
+    <section>
+        <h3>Le développeur reste dans la boucle</h3>
+        <p>Le harnais ne remplace pas la relecture : il la rend moins fréquente et plus ciblée.</p>
+        <ul>
+            <li>l'agent fait une erreur</li>
+            <li>vous la corrigez</li>
+            <li>si elle revient : vous ajoutez un <strong>guide</strong> pour la prévenir, ou un <strong>capteur</strong> pour la détecter</li>
+        </ul>
+        <blockquote>
+            <p>“A good harness should not necessarily aim to fully eliminate human input […]”</p>
+            <cite>- Birgitta Böckeler</cite>
+        </blockquote>
+    </section>
+
+</section>

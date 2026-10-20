@@ -1,0 +1,74 @@
+<section id="cours">
+
+    <section>
+        <h2>Le cours</h2>
+    </section>
+
+    <section>
+        <h3>Objectif</h3>
+        <p>Un agent IA écrit du code vite. Il n'écrit pas forcément du code <strong>juste</strong>.</p>
+        <p>Ce cours apprend à construire le <strong>harnais</strong> qui lui permet de produire du code de qualité :</p>
+        <ul>
+            <li>des <strong>guides</strong> qui l'orientent avant qu'il agisse : spécification, conventions, <code>AGENTS.md</code></li>
+            <li>des <strong>capteurs</strong> qui détectent ses erreurs pour qu'il se corrige : formateurs, analyse statique, tests</li>
+        </ul>
+        <p><mark>Les outils de qualité PHP servent aussi bien au développeur qu'à l'agent.</mark></p>
+    </section>
+
+    <section>
+        <h3>Le fil rouge</h3>
+        <p><strong>helpdesk</strong> : une application Symfony de gestion de tickets de support.</p>
+        <ul>
+            <li>récente par ses versions : PHP 8.4+, Symfony 8</li>
+            <li>datée par son style : contrôleurs trop gros, peu de types, duplication, aucun test</li>
+            <li>des règles métier que personne n'a écrites ailleurs que dans le code</li>
+        </ul>
+        <p>De séance en séance, vous l'<strong>assainissez</strong> en ajoutant un outil au harnais.</p>
+        <footer>
+            <a href="https://github.com/iia-laval/helpdesk" target="_blank" class="info">iia-laval/helpdesk</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Une commande pour tout vérifier</h3>
+        <p>Chaque séance ajoute son outil à une seule commande :</p>
+        <p class="center"><code class="terminal">composer check</code></p>
+        <ul>
+            <li>vous la lancez avant chaque commit</li>
+            <li>l'agent la lance après chaque modification</li>
+            <li>la CI la lance à chaque push</li>
+        </ul>
+        <p>En fin de cours, elle enchaîne formatage, linters, Rector, PHPStan, Deptrac et tests.</p>
+    </section>
+
+    <section>
+        <h3>Une expérience pour mesurer</h3>
+        <p>Le cours ne se contente pas d'affirmer que le harnais aide l'agent : vous allez le <strong>mesurer</strong>.</p>
+        <ul>
+            <li>aujourd'hui : un prompt donné à l'agent sur le projet brut</li>
+            <li>dernière séance : le même prompt sur une branche sans harnais et sur une branche avec harnais</li>
+        </ul>
+        <p>Le résultat est jugé par des tests que l'agent n'a jamais vus.</p>
+    </section>
+
+    <section>
+        <h3>Évaluation</h3>
+        <ul>
+            <li>Test de positionnement, non noté</li>
+            <li>QCM qualité du code et QCM MCP, en fin de module</li>
+            <li>TP à réaliser à la maison</li>
+        </ul>
+    </section>
+
+    <section id="positionnement">
+        <h3>Test de positionnement</h3>
+        <p>20 minutes pour faire le point sur ce que vous savez déjà :</p>
+        <ul>
+            <li>Symfony : contrôleurs, services, Doctrine</li>
+            <li>qualité du code : tests, analyse statique, standards</li>
+            <li>usage des assistants IA</li>
+        </ul>
+        <p>Le résultat n'est pas noté : il sert à adapter le rythme des séances.</p>
+    </section>
+
+</section>
