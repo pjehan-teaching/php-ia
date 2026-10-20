@@ -1,0 +1,9 @@
+# Le harnais comme fil conducteur, sans méthode imposée
+
+Le cours enseigne l'outillage de qualité PHP (formatage, linters, Rector, PHPStan, Deptrac, tests, hooks, CI, audit des dépendances) comme le **harnais** d'un agent IA, au sens de Birgitta Böckeler (« Harness engineering for coding agent users », martinfowler.com, avril 2026) : des **guides** orientent l'agent avant qu'il agisse, des **capteurs** détectent ses erreurs pour qu'il se corrige. La séance 1 pose les guides (principes SOLID, KISS, DRY, PSR, spécification), les séances 2 à 5 ajoutent les capteurs un par un, la séance 6 assemble le harnais (`AGENTS.md`, hooks d'agent, Symfony AI Mate) et mesure son effet (ADR 0003).
+
+Les capteurs déterministes rapides sont regroupés dans une seule commande, `composer check`, créée en séance 2 et enrichie à chaque séance ; `AGENTS.md` la désigne à l'agent. Infection, trop lent pour la boucle de l'agent, ne tourne qu'en CI. PHPStan s'utilise avec `phpstan-symfony` et `phpstan-doctrine`, sans lesquelles il comprend mal le conteneur de services et les dépôts Doctrine.
+
+Les méthodes de spec-driven development (GitHub Spec Kit, OpenSpec, BMAD-METHOD) sont présentées dès la séance 1 pour que l'idée d'écrire la spécification avant le code accompagne tout le cours, mais aucune n'est appliquée. Elles outillent la spécification, là où le cours outille la vérification, et elles changent trop vite : BMAD a renommé et retiré des skills en v6.11, introduit des changements cassants en v6.12, et sa v7 était en preview en octobre 2026. Des slides détaillées écrites en 2026 seraient obsolètes en mai 2027.
+
+**Conséquence** : chaque outil se présente aussi par ce qu'il apporte face au code généré (Rector contre les idiomes datés appris à l'entraînement, PHPStan contre les méthodes inventées, Infection contre les faux tests, la revue de `composer.lock` contre le slopsquatting).
